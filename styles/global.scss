@@ -33,6 +33,10 @@ button {
   cursor: pointer;
 }
 
+.App {
+  height: 100vh;
+}
+
 @media (max-width: 720px) {
   html {
     font-size: 87.5%;
