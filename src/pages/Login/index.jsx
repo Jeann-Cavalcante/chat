@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styles from "./styles.module.scss";
 
 const login = () => {
@@ -24,7 +25,9 @@ const login = () => {
             <button>Entrar</button>
 
             <div className={styles.Link}>
-              <span>Não possui conta ? Faça seu cadastro</span>
+              <Link to="/cadastro">
+                Não possui conta ? <span>Faça seu cadastro</span>
+              </Link>
             </div>
           </form>
         </div>
