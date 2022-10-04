@@ -1,5 +1,5 @@
 .Sidebar {
-  width: 400px;
+  width: 310px;
   background-color: var(--bg-secondary);
   height: 100%;
 
@@ -32,15 +32,13 @@
 
       input {
         width: 100%;
-        padding: 0.2rem 1.5rem;
+        padding: 0.1rem 1.5rem;
         border-radius: 10px;
       }
     }
   }
 
   .Conversas {
-    // padding: 0.5rem;
-
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -49,23 +47,27 @@
     .Users {
       display: flex;
       justify-content: space-around;
-      width: 400px;
+      width: 100%;
       white-space: nowrap;
       box-shadow: 0px 4px 2px black;
-      padding: 00.5rem;
+      padding: 0.5rem;
       transition: all 0.3s;
 
       &:hover {
         background-color: var(--bg-primary);
       }
 
-      img {
-        min-width: 60px;
-        min-height: 60px;
-        width: 60px;
-        height: 60px;
-        border-radius: 100%;
+      h3 {
+        font-size: 0.8rem;
+      }
 
+      img {
+        min-width: 40px;
+        min-height: 40px;
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        margin-right: 0.5rem;
         object-fit: cover;
       }
 
@@ -74,12 +76,12 @@
         flex-direction: column;
         justify-content: space-between;
 
-        width: 280px;
+        width: 230px;
 
         p {
           white-space: nowrap;
           width: 100%;
-          font-size: 0.8rem;
+          font-size: 0.5rem;
         }
       }
 
@@ -96,7 +98,12 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-top: 0.5rem;
+          margin-top: 0.2rem;
+          font-size: 0.5rem;
+        }
+
+        .Hora {
+          font-size: 0.5rem;
         }
       }
     }
