@@ -1,7 +1,8 @@
 import { BsSearch } from "react-icons/bs";
 import styles from "./styles.module.scss";
 
-const Sidebar = () => {
+const Sidebar = ({ user }) => {
+  console.log(user);
   return (
     <aside className={styles.Sidebar}>
       <header>
