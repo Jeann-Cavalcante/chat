@@ -1,8 +1,9 @@
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { BsSearch } from "react-icons/bs";
+import db from "../../firebase/firebase";
 import styles from "./styles.module.scss";
 
 const Sidebar = ({ user }) => {
-  console.log(user);
   return (
     <aside className={styles.Sidebar}>
       <header>
