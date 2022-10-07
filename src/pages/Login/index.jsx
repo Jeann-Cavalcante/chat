@@ -5,12 +5,14 @@ import {
   getAuth,
   GoogleAuthProvider,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import db, { app } from "../../firebase/firebase";
 import {
   addDoc,
   collection,
+  enableIndexedDbPersistence,
   getDocs,
   query,
   serverTimestamp,
@@ -21,7 +23,8 @@ const login = () => {
   const provider = new GoogleAuthProvider();
   const auth = getAuth(app);
   const navigate = useNavigate();
-  const [existe, setExiste] = useState(true);
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
 
   async function handleSingIn(e) {
     e.preventDefault();
@@ -57,11 +60,30 @@ const login = () => {
             created_at: serverTimestamp(),
             email: user?.email,
           });
+          const source = user.metadata.fromCache ? "local cache" : "server";
+          console.log("Data came from " + source);
         } catch (error) {
           console.error(error);
         }
       }
     }
+  }
+
+  async function UsersComEmail(e) {
+    e.preventDefault();
+    console.log(email, senha);
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, senha)
+      .then((userCredential) => {
+        const userLogado = userCredential.user;
+        console.log(userLogado);
+        navigate("/");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
   }
 
   useEffect(() => {
@@ -81,18 +103,26 @@ const login = () => {
             <div className={styles.Input}>
               <label>
                 <span>Email</span>
-                <input type="email" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </label>
             </div>
 
             <div className={styles.Input}>
               <label>
                 <span>Senha</span>
-                <input type="password" />
+                <input
+                  type="password"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                />
               </label>
             </div>
 
-            <button>Entrar</button>
+            <button onClick={UsersComEmail}>Entrar</button>
             <button className={styles.Google} onClick={handleSingIn}>
               Entrar com Google
             </button>

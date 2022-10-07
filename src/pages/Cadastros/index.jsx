@@ -3,6 +3,8 @@ import styles from "./styles.module.scss";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 let schema = yup.object().shape({
   nome: yup
@@ -15,6 +17,7 @@ let schema = yup.object().shape({
     .string()
     .required("Campo obrigatório")
     .oneOf([yup.ref("senha"), null], "As senhas devem ser iguais"),
+  imagem: yup.mixed().required("Campo obrigatorio"),
 });
 
 const Cadastros = () => {
@@ -25,8 +28,19 @@ const Cadastros = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
-  function onSubmit(data) {
-    console.log(data);
+  async function onSubmit(data) {
+    const auth = getAuth();
+    try {
+      const res = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.senha
+      );
+
+      console.log(res.user);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -71,7 +85,10 @@ const Cadastros = () => {
             <div className={styles.Input}>
               <label className={styles.Label}>
                 <span>Foto do perfil</span>
-                <input type="file" id="file" />
+                <input type="file" id="file" {...register("imagem")} />
+                <span className={styles.Error}>
+                  {errors?.confirma?.message}
+                </span>
               </label>
             </div>
 
