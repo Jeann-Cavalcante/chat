@@ -18,6 +18,7 @@ import {
   serverTimestamp,
   where,
 } from "firebase/firestore";
+import { useUserContext } from "../../hooks/useContext";
 
 const login = () => {
   const provider = new GoogleAuthProvider();
@@ -25,6 +26,8 @@ const login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+
+  const { usePrimary, setUserPrimary } = useUserContext();
 
   async function handleSingIn(e) {
     e.preventDefault();
@@ -35,7 +38,9 @@ const login = () => {
         const user = result.user;
 
         // console.log(user);
-        UsersComGoogle(user);
+
+        setUserPrimary(user);
+        UsersComGoogle();
 
         navigate("/");
       })
@@ -44,24 +49,22 @@ const login = () => {
       });
   }
 
-  async function UsersComGoogle(user) {
-    if (user) {
+  async function UsersComGoogle() {
+    if (usePrimary) {
       const col = collection(db, "users");
-      const existeEmail = query(col, where("email", "==", user.email));
+      const existeEmail = query(col, where("email", "==", usePrimary.email));
       const querySnapshot = await getDocs(existeEmail);
 
       if (querySnapshot.empty) {
         console.log("Criando usuario");
         try {
           addDoc(col, {
-            username: user?.displayName,
-            avatarURL: user?.photoURL,
-            userId: user?.uid,
+            username: usePrimary?.displayName,
+            avatarURL: usePrimary?.photoURL,
+            userId: usePrimary?.uid,
             created_at: serverTimestamp(),
-            email: user?.email,
+            email: usePrimary?.email,
           });
-          const source = user.metadata.fromCache ? "local cache" : "server";
-          console.log("Data came from " + source);
         } catch (error) {
           console.error(error);
         }

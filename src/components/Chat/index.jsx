@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../../hooks/useContext";
 
 const Chat = ({ user }) => {
   const [message, setMessage] = useState("");
@@ -19,6 +20,8 @@ const Chat = ({ user }) => {
   const messagesRef = useRef();
   const auth = getAuth();
   const navigate = useNavigate();
+
+  const { usePrimary, setUserPrimary } = useUserContext();
 
   useEffect(() => {
     messagesRef.current?.scrollIntoView({
@@ -72,7 +75,7 @@ const Chat = ({ user }) => {
     signOut(auth)
       .then(() => {
         navigate("/login");
-        setUser(null);
+        setUserPrimary(null);
       })
       .catch((error) => {
         console.log(error);
