@@ -21,7 +21,7 @@ const Chat = ({ user }) => {
   const auth = getAuth();
   const navigate = useNavigate();
 
-  const { usePrimary, setUserPrimary } = useUserContext();
+  const { userPrimary, setUserPrimary } = useUserContext();
 
   useEffect(() => {
     messagesRef.current?.scrollIntoView({
@@ -32,9 +32,9 @@ const Chat = ({ user }) => {
   async function sendMessage() {
     try {
       await addDoc(collection(db, "messages"), {
-        username: user?.displayName,
-        avatarURL: user?.photoURL,
-        userId: user?.uid,
+        username: userPrimary?.displayName,
+        avatarURL: userPrimary?.photoURL,
+        userId: userPrimary?.uid,
         message: message,
         created_at: serverTimestamp(),
       });
@@ -82,15 +82,15 @@ const Chat = ({ user }) => {
       });
   }
 
-  // console.log(user);
+  console.log(userPrimary);
 
   return (
     <div className={styles.Container}>
       <header>
-        {user && (
-          <div key={user.uid} className={styles.Usuario}>
-            <img src={user?.photoURL} />
-            <span>{user.displayName}</span>
+        {userPrimary && (
+          <div key={userPrimary.uid} className={styles.Usuario}>
+            <img src={userPrimary?.photoURL} />
+            <span>{userPrimary.displayName}</span>
           </div>
         )}
 
@@ -103,7 +103,7 @@ const Chat = ({ user }) => {
         <ul>
           {messagesList ? (
             messagesList.map((message) => {
-              return message.userId !== user?.uid ? (
+              return message.userId !== userPrimary?.uid ? (
                 <li className={styles.UserSecondary} key={message.idMessage}>
                   <div className={styles.UserSecondaryDiv}>
                     <img src={message?.avatarURL} />

@@ -12,7 +12,6 @@ import db, { app } from "../../firebase/firebase";
 import {
   addDoc,
   collection,
-  enableIndexedDbPersistence,
   getDocs,
   query,
   serverTimestamp,
@@ -27,7 +26,7 @@ const login = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  const { usePrimary, setUserPrimary } = useUserContext();
+  const { userPrimary, setUserPrimary } = useUserContext();
 
   async function handleSingIn(e) {
     e.preventDefault();
@@ -40,6 +39,7 @@ const login = () => {
         // console.log(user);
 
         setUserPrimary(user);
+        console.log(userPrimary);
         UsersComGoogle();
 
         navigate("/");
@@ -50,20 +50,20 @@ const login = () => {
   }
 
   async function UsersComGoogle() {
-    if (usePrimary) {
+    if (userPrimary) {
       const col = collection(db, "users");
-      const existeEmail = query(col, where("email", "==", usePrimary.email));
+      const existeEmail = query(col, where("email", "==", userPrimary.email));
       const querySnapshot = await getDocs(existeEmail);
 
       if (querySnapshot.empty) {
         console.log("Criando usuario");
         try {
           addDoc(col, {
-            username: usePrimary?.displayName,
-            avatarURL: usePrimary?.photoURL,
-            userId: usePrimary?.uid,
+            username: userPrimary?.displayName,
+            avatarURL: userPrimary?.photoURL,
+            userId: userPrimary?.uid,
             created_at: serverTimestamp(),
-            email: usePrimary?.email,
+            email: userPrimary?.email,
           });
         } catch (error) {
           console.error(error);
@@ -74,7 +74,6 @@ const login = () => {
 
   async function UsersComEmail(e) {
     e.preventDefault();
-    console.log(email, senha);
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, senha)
       .then((userCredential) => {
