@@ -4,7 +4,15 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  getStorage,
+} from "firebase/storage";
+import { useState } from "react";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import db from "../../firebase/firebase";
 
 let schema = yup.object().shape({
   nome: yup
@@ -21,6 +29,8 @@ let schema = yup.object().shape({
 });
 
 const Cadastros = () => {
+  const [photos, setPhotos] = useState([]);
+  const [id, setId] = useState(null);
   const {
     register,
     handleSubmit,
@@ -28,18 +38,55 @@ const Cadastros = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
-  async function onSubmit(data) {
-    const auth = getAuth();
-    try {
-      const res = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.senha
-      );
+  function onSubmit(data) {
+    console.log("Chegou aqui");
+  }
 
-      console.log(res.user);
-    } catch (error) {
-      console.log(error);
+  async function handleImagem(e) {
+    e.preventDefault();
+    console.log("Chegou aqui img");
+
+    try {
+      if (
+        !["image/png", "image/jpg", "image/jpeg"].includes(
+          e.target[4].files[0].type
+        )
+      ) {
+        alert("tipo de arquivo não suportado");
+      } else {
+        const auth = getAuth();
+        const res = await createUserWithEmailAndPassword(
+          auth,
+          e.target[1].value,
+          e.target[2].value
+        ).then((userCredential) => {
+          const user = userCredential.user;
+          setId(user.uid);
+          console.log(user);
+        });
+
+        const storage = getStorage();
+        const storageRef = ref(storage, e.target[1].value);
+
+        uploadBytesResumable(storageRef, e.target[4].files[0]).then(
+          (snapshot) => {
+            getDownloadURL(storageRef).then(async (downloadURL) => {
+              console.log("img :" + downloadURL, "sna: " + snapshot);
+              setPhotos(downloadURL);
+            });
+          }
+        );
+        const col = collection(db, "users");
+        await addDoc(col, {
+          username: e.target[0].value,
+          avatarURL: photos,
+          userId: id,
+          created_at: serverTimestamp(),
+          email: e.target[1].value,
+        });
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -48,7 +95,8 @@ const Cadastros = () => {
       <div className={styles.Form}>
         <h1>Cadastro</h1>
         <div className={styles.formCenter}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleImagem}>
+            {/* <form onSubmit={teste}> */}
             <div className={styles.Input}>
               <label>
                 <span>Nome</span>

@@ -7,12 +7,14 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
+import { FaUserCircle } from "react-icons/fa";
 import db from "../../firebase/firebase";
 import styles from "./styles.module.scss";
 
 const Sidebar = ({ user }) => {
   const [users, setUsers] = useState([]);
 
+  console.log(user.uid);
   useEffect(() => {
     async function getUsers() {
       try {
@@ -28,7 +30,10 @@ const Sidebar = ({ user }) => {
               userId: item.data().userId,
             });
 
-            setUsers(lista);
+            let listaFilter = lista.filter((list) => list.userId != user.uid);
+
+            setUsers(listaFilter);
+            console.log(listaFilter);
           });
         });
       } catch (err) {
@@ -51,9 +56,10 @@ const Sidebar = ({ user }) => {
       </header>
 
       <div className={styles.Conversas}>
-        {users.map((item) => (
-          <div key={item.userId} className={styles.Users}>
-            <img src={item.avatarURL} />
+        {users?.map((item) => (
+          <div key={item?.userId} className={styles.Users}>
+            {item.avatarURL ? <img src={item?.avatarURL} /> : <FaUserCircle />}
+
             <div className={styles.Mensagem}>
               <h3>{item.username}</h3>
               <p>{item.email}</p>
