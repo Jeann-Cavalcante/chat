@@ -2,7 +2,7 @@
 
 ##  Projeto em desenvolvimento..
 
-Projeto criado para aperfeiçoar o consumo de Api com Axios, fazendo get de todo tipo de categoria, e também fazendo o uso do react router dom e contexts.
+Chat construido com react e firebase, combinação poderosa para aplicações fullstack, esse app consiste em aperfeiçoar o uso do React com storage, banco de dados e Autenticação social.
 
 ## Layout web
  ![](https://github.com/Jeann-Cavalcante/assets-projects/blob/main/Chat/chatOnline.gif?raw=true)
