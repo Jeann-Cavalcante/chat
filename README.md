@@ -1,6 +1,6 @@
 # Sobre o projeto
 
-##  Projeto em desenvolvimento..
+##  ⚠⚠Projeto em desenvolvimento..⚠⚠
 
 Chat construido com react e firebase, combinação poderosa para aplicações fullstack, esse app consiste em aperfeiçoar o uso do React com storage, banco de dados e Autenticação social.
 
